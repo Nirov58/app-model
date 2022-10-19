@@ -1,0 +1,82 @@
+user_1 = User.objects.create_user('user_1')
+user_2 = User.objects.create_user('user_2')
+
+author_1 = Author.objects.create(user = user_1)
+author_2 = Author.objects.create(user = user_2)
+
+cat_business = Category.objects.create(name = "business")
+cat_politics = Category.objects.create(name = "politics")
+cat_science = Category.objects.create(name = "science")
+cat_entertainment = Category.objects.create(name = "entertainment")
+
+article_1 = Post.objects.create(author = author_1,
+                                type = Post.article,
+                                name = "The World’s Biggest Clown Purchases the World’s Largest Circus",
+                                text = "The recent events concerning a deal to buy Twitter Inc can lead to Elon Musk "\
+                                       "being forced to pay for the company. The question is, whether gaining "\
+                                       "ownership over one of the most bizarre media platforms the Internet has ever "\
+                                       "seen is able to make reputation of the richest person on the Earth even worse.")
+article_2 = Post.objects.create(author = author_2,
+                                type = Post.article,
+                                name = "Make Maths Great Again!",
+                                text = "Recently many scientists frequently talk about so-called ‘objectivity’. "\
+                                       "Meanwhile, however, it is obvious for any bystander how shamelessly supporters"\
+                                       " of numerous so-called ‘critical’ theories bring their agenda into science. "\
+                                       "If those latent communist do not hesitate to do it, why sane people should "\
+                                       "act in other way? Therefore I suggest making science more patriotic. Of "\
+                                       "course we should start with Maths as one of the fundamental disciplines. The "\
+                                       "first step must be getting rid of those Arabic numerals. By that way we would "\
+                                       "decrease harmful influence of the alien Eastern culture on our own.")
+news_1 = Post.objects.create(author = author_1,
+                                type = Post.news,
+                                name = "New Film by Alan Smithee",
+                                text = "The most productive director in human history was confirmed to have worked on "\
+                                       "the horror 'Nightmare Friday 5: Johnny’s Revenge', which became the 3rd film "\
+                                       "shot by Smithee this year.\nLike the previous parts, the movie was based on "\
+                                       "the series written by Cordwainer Bird.")
+
+PostCategory.objects.create(post = article_1, category = cat_business)
+PostCategory.objects.create(post = article_2, category = cat_politics)
+PostCategory.objects.create(post = article_2, category = cat_science)
+PostCategory.objects.create(post = news_1, category = cat_entertainment)
+
+comment_1 = Comment.objects.create(post = article_1,
+                       user = user_2,
+                       text = "Unless twi stops silencing millions of users and promoting woke agenda, there will be "\
+                              "no value in this platform, regardless of who owns it.")
+comment_2 = Comment.objects.create(post = article_1,
+                       user = user_1,
+                       text = "@user_2, ok boomer")
+comment_3 = Comment.objects.create(post = article_2,
+                       user = user_1,
+                       text = "jeez man\ncome outside and touch grass or smth")
+comment_4 = Comment.objects.create(post = news_1,
+                       user = user_2,
+                       text = "Who the hell is that Smithee?")
+
+Post.like(article_1)
+Post.dislike(article_2)
+Post.like(news_1)
+Post.like(news_1)
+Comment.dislike(comment_1)
+Comment.dislike(comment_1)
+Comment.dislike(comment_2)
+Comment.like(comment_3)
+Comment.like(comment_3)
+Comment.like(comment_4)
+
+Author.update_rating(author_1)
+Author.update_rating(author_2)
+
+best_author = Author.objects.all().order_by('-user_rating')[0]
+best_author.user.username
+best_author.user_rating
+
+best_post = Post.objects.all().order_by('-rating')[0]
+print(best_post.date)
+best_post.author.user.username
+best_post.rating
+best_post.name
+Post.preview(best_post)
+
+Comment.objects.filter(post=best_post).values('date','user','rating','text')
